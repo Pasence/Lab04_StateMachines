@@ -54,9 +54,9 @@ void Tick_LED() {
 		break;
 	case OFF_rel:
 		break;
-	case ON_press:
+	case On_press:
 		break;
-	case ON_rel;
+	case On_rel;
 		break;
 	case OFF_rel:
 		break;
@@ -69,7 +69,7 @@ int main(void) {
 	DDRA = 0x00; PORTA = 0x00;
 	DDRB = 0xFF; PORTB = 0x00;
     /* Insert your solution below */
-
+	LED_State = Start;
     while (1) {
 	Tick_LED();	
     }
