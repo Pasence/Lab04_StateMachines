@@ -36,8 +36,8 @@ void Tick_LED() {
 		break;
 	case On_rel:
 		if ( button == 0x01) {
-			LED State = OFF_press;
-			PORTGB = 0x01;
+			LED_State = OFF_press;
+			PORTB = 0x01;
 		}
 		else LED_State = On_rel;
 		break;
@@ -46,7 +46,7 @@ void Tick_LED() {
 		else LED_State = OFF_rel;
 		break;
 	default: 
-		LED_State = start;
+		LED_State = Start;
 		break;	
 	}//trasition actions
 	switch(LED_State){
@@ -56,7 +56,7 @@ void Tick_LED() {
 		break;
 	case On_press:
 		break;
-	case On_rel;
+	case On_rel:
 		break;
 	case OFF_rel:
 		break;
