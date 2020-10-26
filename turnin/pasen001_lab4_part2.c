@@ -23,10 +23,16 @@ void Tick_CNT() {
 	case Init:
 		if ( button == 0x01 ) {
 			cnt_State = inc_Press;
-			PORTC = PINC + 1;
+			if( PINC == 10){
+				PORTC = PINC +0;
+			}
+			else PORTC = PINC + 1;
 		} 
 		else if (button == 0x02){
 			cnt_State = dec_Press;
+			 if( PINC == 0){
+                                PORTC = PINC +0;
+                        }
 			PORTC = PINC - 1;
 		}
 		else if (button == 0x03){
