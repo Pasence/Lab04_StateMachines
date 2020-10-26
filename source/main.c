@@ -11,54 +11,93 @@
 #ifdef _SIMULATE_
 #include "simAVRHeader.h"
 #endif
-enum LED_States { Start, OFF_rel, On_press, On_rel, OFF_press} LED_State;
+enum Cnt_States { Start, Init, inc_Press, inc_Rel, dec_Press, dec_Rel, reset_press, reset_rel} cnt_State;
 
-void Tick_LED() {
+void Tick_CNT() {
 	unsigned char button;
-	button = PINA & 0x01;
-	switch(LED_State){
+	button = PINA & 0x03;
+	switch(cnt_State){
 	case Start:
-		PORTB = 0x01;
-		LED_State = OFF_rel;
+		cnt_State = Init;
 		break;
-	case OFF_rel:
+	case Init:
 		if ( button == 0x01 ) {
-			LED_State = On_press;
-			PORTB = 0x02;
+			cnt_State = inc_Press;
+			if( PINC == 9){
+				PORTC = PINC +0;
+			}
+			else PORTC = PINC + 1;
 		} 
-		else LED_State = OFF_rel;
+		else if (button == 0x02){
+			cnt_State = dec_Press;
+			 if( PINC == 0){
+                                PORTC = PINC +0;
+                        }
+			PORTC = PINC - 1;
+		}
+		else if (button == 0x03){
+			cnt_State = reset_press;
+			PORTC = 0x00;
+		}
+		else {cnt_State = Init;}
 		break;
-	case On_press:
+	// increase actions
+	case inc_Press:
 		if ( button == 0x00 ) {
-			LED_State = On_rel;
+			cnt_State = inc_Rel;
 		}
-		else LED_State = On_press;
-		break;
-	case On_rel:
-		if ( button == 0x01) {
-			LED_State = OFF_press;
-			PORTB = 0x01;
+		else if (button == 0x03){
+                        cnt_State = reset_press;
+                        PORTC = 0x00; 
 		}
-		else LED_State = On_rel;
+		else cnt_State = inc_Press;
 		break;
-	case OFF_press:
-		if (button == 0x00) LED_State = OFF_press;
-		else LED_State = OFF_rel;
+	case inc_Rel:
+		cnt_State = Init;
+		break;
+	// decrease actions
+	case dec_Press:
+                if ( button == 0x00 ) {
+                        cnt_State = dec_Rel;
+                }
+		else if (button == 0x03){
+                        cnt_State = reset_press;
+                        PORTC = 0x00; 
+		}
+                else cnt_State = dec_Press;
+                break;
+        case dec_Rel:
+                cnt_State = Init;
+                break;
+	//reset actions
+	case reset_press:
+		if (button == 0x00) {
+			cnt_State = reset_rel;
+		}
+		break;
+	case reset_rel:
+		cnt_State = Init;
 		break;
 	default: 
-		LED_State = Start;
+		cnt_State = Start;
 		break;	
 	}//trasition actions
-	switch(LED_State){
+	switch(cnt_State){
 	case Start:
 		break;
-	case OFF_rel:
+	case Init:
 		break;
-	case On_press:
+	case inc_Press:
 		break;
-	case On_rel:
+	case inc_Rel:
 		break;
-	case OFF_press:
+	case dec_Press:
+		break;
+	case dec_Rel:
+		break;
+	case reset_press:
+		break;
+	case reset_rel:
 		break;
 	default:
 		break;
@@ -67,11 +106,12 @@ void Tick_LED() {
 int main(void) {
     /* Insert DDR and PORT initializations */
 	DDRA = 0x00; PORTA = 0x00;
-	DDRB = 0xFF; PORTB = 0x00;
+	DDRC = 0xFF; PORTC = 0x00;
     /* Insert your solution below */
-	LED_State = Start;
+	cnt_State = Start;
+	PORTC = 0x07;
     while (1) {
-	Tick_LED();	
+	Tick_CNT();	
     }
     return 1;
 }

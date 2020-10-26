@@ -46,6 +46,10 @@ void Tick_CNT() {
 		if ( button == 0x00 ) {
 			cnt_State = inc_Rel;
 		}
+		else if (button == 0x03){
+                        cnt_State = reset_press;
+                        PORTC = 0x00; 
+		}
 		else cnt_State = inc_Press;
 		break;
 	case inc_Rel:
@@ -56,6 +60,10 @@ void Tick_CNT() {
                 if ( button == 0x00 ) {
                         cnt_State = dec_Rel;
                 }
+		else if (button == 0x03){
+                        cnt_State = reset_press;
+                        PORTC = 0x00; 
+		}
                 else cnt_State = dec_Press;
                 break;
         case dec_Rel:
